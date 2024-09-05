@@ -7,10 +7,10 @@ import util
 import os
 
 db_path = 'leetcode.db'
-user_agent = r'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36'
+user_agent = r'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'
 
 def withUrl(u):
-    return "https://leetcode-cn.com/"+u
+    return "https://leetcode.com/"+u
 
 def leetcode_key(id):
     return "leetcode_"+str(id)
@@ -153,7 +153,7 @@ class Leetcode:
         j = json.loads(content)
         j['data']['question']['paid_only'] = paid_only
         self.save_problem(id, json.dumps(j))
-        return j['data']['question']['translatedTitle']
+        return j['data']['question']['questionTitle'] # translatedTitle =None
 
     def get_update_db_time(self):
         t = self.dict.get("leetcode_update_db_time")
@@ -168,9 +168,13 @@ class Leetcode:
         t = self.get_update_db_time()
         if util.now()-t < 24*3600*1000:
             return
-
+            
+        ## pretend to be browser
+        headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36'}
         url = withUrl("api/problems/all/")
-        f = urllib.request.urlopen(url)
+        req = urllib.request.Request(url=url, headers=headers)
+        f = urllib.request.urlopen(req)
+
         content = f.read().decode('utf-8')
         qlist = json.loads(content)
 
