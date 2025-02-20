@@ -12,11 +12,11 @@ class Solution:
         tail = strs[-1]
         
         lcp = ""
-        for i in range(min(len(head), len(tail))):
-            if head[i] != tail[i]:
-                return lcp
-            else:
+        for i in range(len(head)):
+            if head[i] == tail[i]:
                 lcp += head[i]
+            else:
+                return lcp
         return lcp
         
 # @lc code=end
